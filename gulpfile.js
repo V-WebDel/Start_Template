@@ -7,8 +7,6 @@ var gulp          = require('gulp'),
         cleancss      = require('gulp-clean-css'),
         concat        = require('gulp-concat'),
         imagemin      = require('gulp-imagemin'),
-        imageminJpegRecompress = require('imagemin-jpeg-recompress'),
-        pngquant      = require('imagemin-pngquant'),
 		gutil         = require('gulp-util' ),
         notify        = require("gulp-notify"),
         rename        = require('gulp-rename'),
@@ -61,21 +59,17 @@ gulp.task('watch', ['sass', 'js', 'browser-sync'], function() {
 
 gulp.task('imagemin', function() {
 	return gulp.src('app/img/**/*')
-	.pipe(cache(imagemin([
+	.pipe(imagemin([
       imagemin.gifsicle({interlaced: true}),
       imagemin.jpegtran({progressive: true}),
-      imageminJpegRecompress({
-        loops: 5,
-        min: 65,
-        max: 70,
-        quality:'medium'
-      }),
-      imagemin.svgo(),
-      imagemin.optipng({optimizationLevel: 3}),
-      pngquant({quality: '65-70', speed: 5})
-    ], {
-      verboze: true
-    })))
+      imagemin.optipng({optimizationLevel: 5}),
+      imagemin.svgo({
+        plugins: [
+          {removeViewBox: true},
+          {cleanupIDs: false}
+        ]
+      })
+    ]))
 	.pipe(gulp.dest('dist/img')); 
 });
 
